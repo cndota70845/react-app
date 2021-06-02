@@ -1,15 +1,13 @@
 import './App.css';
 import 'antd/dist/antd.css';
 import React from 'react';
-import routes from './router/router';
-import { BrowserRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
+import Home from './view/home/home.jsx';
 
 export default class App extends React.Component {
   render () {
     return (
       <div className="App">
-        <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+        <Home></Home>
       </div>
     )
   } 
