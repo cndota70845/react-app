@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import './DecCreate.scss';
-import Matryoshka from '../../../components/matryoshka/matryoshka.jsx';
+import Matryoshka from '../../../containers/app.js';
 
 export default class DecCreate extends React.Component {
     constructor (props) {

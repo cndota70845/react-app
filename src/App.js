@@ -2,13 +2,13 @@ import './App.css';
 import 'antd/dist/antd.css';
 import React from 'react';
 import Home from './view/home/home.jsx';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import todoApp from '../src/store/reducers/index.js';
+import store from '../src/store/reducers/index.js';
+import API from '../src/request/api';
 
-const store = createStore(todoApp);
+window.__proto__.API = API;
 
-export default class App extends React.Component {
+export default class App extends React.Component { 
   render () {
     return (
       <Provider store={store}>
