@@ -13,10 +13,14 @@ export default class DecCreate extends React.Component {
         this.onClick = this.onClick.bind(this);
     }
 
+    componentDidMount () {
+
+    }
+
     onClick () {
-        this.setState((pre)=>{
+        this.setState((state, props)=>{
             return {
-                msg: pre.msg + 1
+                msg: state.msg + 1
             }
         },()=> {
             console.log(this.state.msg);
