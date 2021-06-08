@@ -1,6 +1,28 @@
 import React from 'react';
 import './DecList.sass';
 
+let person = {};
+var num = 0;
+Object.defineProperty(person,'a',{
+    get: function () {
+        return ++num;
+    },
+    set: function (params) {
+        console.log(params);
+    }
+});
+
+const handler = {
+    get: function(obj, prop) {
+        return prop in obj ? ++obj[prop] : 0;
+    }
+};
+
+const person_p = new Proxy({a:0}, handler);
+
+console.log(person.a === 1 && person.a === 2);
+console.log(person_p.a === 1 && person_p.a === 2);
+
 export default class DecList extends React.Component {
     constructor (props) {
         super(props);

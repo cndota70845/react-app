@@ -1,9 +1,7 @@
 import './home.scss';
 import menu from '../../assets/menu.json';
 import React from 'react';
-import routes from '../../router/router.js';
-import { HashRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
+import FrontendRouter from './FrontendRouter.jsx';
 import { createHashHistory } from "history";
 import { Menu } from 'antd';
 const { SubMenu } = Menu;
@@ -48,7 +46,7 @@ export default class Home extends React.Component {
                     </Menu>
                 </menu>
                 <header className="home-header">
-                    <HashRouter>{renderRoutes(routes)}</HashRouter>
+                    <FrontendRouter></FrontendRouter>
                 </header>
             </div>
         )
