@@ -1,5 +1,5 @@
 import './home.scss';
-import menu from '../../assets/menu.json';
+import menu from '@/assets/menu.json';
 import React from 'react';
 import FrontendRouter from './FrontendRouter.jsx';
 import { createHashHistory } from "history";
