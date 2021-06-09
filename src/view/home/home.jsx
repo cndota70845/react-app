@@ -18,10 +18,21 @@ export default class Home extends React.Component {
     }
 
     handleClick () {
+        var data = {id:3,name:'sam',age:36};
+        function createSearch (val) {
+            let str = '';
+            for (let key in val) {
+                str = `${str}?${key}=${val[key]}`;
+            }
+            return str;
+        }
         let path = window.location.hash.replace('#/','');
         let router = createHashHistory();
         if (path !== arguments[0].key) {
-            router.push(`/${arguments[0].key}`);
+            router.push({
+                pathname:`/${arguments[0].key}`,
+                search: createSearch(data)
+            });
         }
     }
 
