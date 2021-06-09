@@ -18,9 +18,11 @@ export default class Home extends React.Component {
     }
 
     handleClick () {
+        let path = window.location.hash.replace('#/','');
         let router = createHashHistory();
-        console.log(arguments[0].key);
-        router.push(`/${arguments[0].key}`);
+        if (path !== arguments[0].key) {
+            router.push(`/${arguments[0].key}`);
+        }
     }
 
     render () {
@@ -28,7 +30,7 @@ export default class Home extends React.Component {
             <div className="home">
                 <menu className="menu">
                     <Menu 
-                        onClick={this.handleClick} 
+                        onClick={this.handleClick.bind(this)} 
                         selectedKeys={[this.state.current]} 
                         theme={this.state.theme}
                         mode={this.state.mode}

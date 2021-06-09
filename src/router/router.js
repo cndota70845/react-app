@@ -20,7 +20,7 @@ const routes = [
     },
     {
         path: '/*',
-        component: Default,
+        component:Default,
         exact: true
     }
 ];
