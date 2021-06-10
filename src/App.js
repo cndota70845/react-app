@@ -1,7 +1,7 @@
 import './App.css';
 import 'antd/dist/antd.css';
 import React from 'react';
-import Home from './view/home/home.jsx';
+import  FrontendRouter from '@/view/home/FrontendRouter.jsx';
 import { Provider } from 'react-redux';
 import store from '../src/store/reducers/index.js';
 import API from '../src/request/api';
@@ -15,7 +15,7 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <div className="App">
-          <Home></Home>
+          <FrontendRouter></FrontendRouter>
         </div>
       </Provider>
     )

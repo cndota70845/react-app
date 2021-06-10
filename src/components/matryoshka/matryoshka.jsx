@@ -1,5 +1,5 @@
 import React from 'react';
-import './matryoshka.scss';
+import styles from './matryoshka.module.scss';
 import { Button } from 'antd';
 
 export default class matryoshka extends React.Component {
@@ -23,7 +23,7 @@ export default class matryoshka extends React.Component {
         return (
             <div>
                 <h1>this is {this.state.name} page --- {this.props.msg}</h1>
-                <div className="BTN">
+                <div className={styles.BTN}>
                     <Button type="primary" onClick={this.props.addTodo.bind(this,10)}>ADD 10</Button>
                     <Button type="primary" onClick={this.props.minusTodo.bind(this,10)}>MINUS 10</Button>
                     <Button type="primary" onClick={this.props.multiplyTodo.bind(this,10)}>MULTIPLY 10</Button>

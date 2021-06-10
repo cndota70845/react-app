@@ -1,9 +1,11 @@
-import './home.scss';
+import styles from './home.module.scss';
 import menu from '@/assets/menu.json';
 import React from 'react';
-import FrontendRouter from './FrontendRouter.jsx';
 import { createHashHistory } from "history";
 import { Menu } from 'antd';
+import { HashRouter } from 'react-router-dom';
+import { Route } from 'react-router';
+
 const { SubMenu } = Menu;
 
 export default class Home extends React.Component {
@@ -38,14 +40,14 @@ export default class Home extends React.Component {
 
     render () {
         return (
-            <div className="home">
-                <menu className="menu">
+            <div className={styles.home}>
+                <menu className={styles.menu}>
                     <Menu 
                         onClick={this.handleClick.bind(this)} 
                         selectedKeys={[this.state.current]} 
                         theme={this.state.theme}
                         mode={this.state.mode}
-                        className="flex"
+                        className={styles.flex}
                     >
                         {this.state.menu.map((comment) => (
                             comment.children
@@ -58,8 +60,10 @@ export default class Home extends React.Component {
                         ))} 
                     </Menu>
                 </menu>
-                <header className="home-header">
-                    <FrontendRouter></FrontendRouter>
+                <header className={styles.homeHeader}>
+                    <HashRouter>
+                        <Route path={this.props.route.path} component={this.props.route.component}></Route>
+                    </HashRouter>
                 </header>
             </div>
         )

@@ -1,6 +1,7 @@
 import DecCreate from '@/view/Dec/DecCreate/DecCreate.jsx';
 import Default from '@/view/Dec/Default/Default.jsx';
 import DecList from '@/view/Dec/DecList/DecList.jsx';
+import Login from '@/view/login/login.jsx';
 
 const routes = [
     {
@@ -16,6 +17,11 @@ const routes = [
     {
         path: '/DecList',
         component: DecList,
+        exact: true
+    },
+    {
+        path: '/Login',
+        component: Login,
         exact: true
     },
     {
