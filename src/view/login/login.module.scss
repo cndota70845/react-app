@@ -9,9 +9,22 @@
     font-size: calc(10px + 2vmin);
     color: white;
     .box {
-        width: 400px;
-        height: 400px;
+        width: 300px;
         background-color: rgba(70,66,66,0.7);
         border-radius:5px;
+        display: flex;
+        flex-direction: row;
+        form {
+            width: 300px;
+            padding: 20px 20px;
+        }
+        .BTN {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+        .icon {
+            color: rgb(168 163 163 / 85%)!important;
+        }
     }
 }
