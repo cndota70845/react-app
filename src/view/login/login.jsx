@@ -2,6 +2,8 @@ import React from 'react';
 import style from './login.module.scss';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import md5 from 'md5';
+import { createHashHistory } from "history";
 
 const layout = {
     labelCol: {
@@ -12,7 +14,7 @@ const layout = {
     },
 };
 
-export default class NotFound extends React.Component {
+export default class Login extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -77,7 +79,13 @@ export default class NotFound extends React.Component {
     }
 
     onFinish (values) {
+        const md5_password = md5(values.password);
+        values.password = md5_password;
         console.log('Success:', values);
+        let router = createHashHistory();
+        router.push({
+            pathname:`/`
+        });
     };
     
     onFinishFailed (errorInfo) {
@@ -131,7 +139,7 @@ export default class NotFound extends React.Component {
                                 allowClear={true}
                                 prefix={<LockOutlined className={style.icon}/>}
                                 placeholder="Password"
-                                autoComplete="false"
+                                autoComplete="true"
                             />
                         </Form.Item>
                         <div className={style.BTN}>
