@@ -2,31 +2,30 @@
     width: 100%;
     min-height: 100%;
     .home-logo {
-        height: 40vmin;
-        pointer-events: none;
+      height: 40vmin;
+      pointer-events: none;
     }
     .homeHeader {
-        background-color: #282c34;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-size: calc(10px + 2vmin);
-        color: white;
+      background-color: white;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      font-size: calc(10px + 2vmin);
+      padding: 3vmin;
+      color: white;
     }
     @media (prefers-reduced-motion: no-preference) {
-        .home-logo {
-          animation: App-logo-spin infinite 20s linear;
-        }
+      .home-logo {
+        animation: App-logo-spin infinite 20s linear;
+      }
     }
     @keyframes App-logo-spin {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg);
-        }
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
     .menu {
       background-color: #282c34;

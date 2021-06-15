@@ -41,12 +41,12 @@ export default class FrontendRouter extends React.Component{
         }
 
         const homePage = (props,route) => {
-            console.log('homePage');
+            console.log('路由守卫');
             return <Home {...props} route={route} />
         }
         
         return (
-            <HashRouter getUserConfirmation={getConfirmation('初始化',cb)}>
+            <HashRouter getUserConfirmation={getConfirmation('路由初始化',cb)}>
                 <Switch>
                     {this.state.routes.map((route, i) => (
                         <Route

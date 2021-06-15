@@ -48,6 +48,23 @@ export default class Login extends React.Component {
         this.initData();
     }
 
+    shouldComponentUpdate (nextProps,nextState) {
+        console.log('shouldComponentUpdate',nextProps,nextState);
+        return true;
+    }
+
+    componentDidUpdate (prevProps,prevState) {
+        console.log('componentDidUpdate',prevProps,prevState);
+    }
+
+    componentDidCatch (error, info) {
+        console.log('componentDidCatch',error, info);
+    }
+
+    componentWillUnmount () {
+        console.log('componentWillUnmount');
+    }
+
     async initData () { 
         const response = await new Promise((resolve,reject)=>{
             setTimeout(()=>{
@@ -55,11 +72,10 @@ export default class Login extends React.Component {
                 this.onSetState('password','123456');
                 resolve('ok');
             },2000);
-        }).then(()=>{
-            this.formRef.current.setFieldsValue({username:'liuyan'});
-            this.formRef.current.setFieldsValue({password:'123456'});
         });
         if (response && response === 'ok') {
+            this.formRef.current.setFieldsValue({username:'liuyan'});
+            this.formRef.current.setFieldsValue({password:'123456'});
             console.log('异步赋值完成');
         }
     }

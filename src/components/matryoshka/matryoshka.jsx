@@ -12,7 +12,7 @@ export default class matryoshka extends React.Component {
     }
 
     async componentDidMount(){
-        const res = window.API.listGet();
+        const res = await window.API.listGet();
         if (res) {
             console.log(res);
         }

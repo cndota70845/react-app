@@ -28,7 +28,7 @@ export default class Home extends React.Component {
             }
             return str;
         }
-        let path = window.location.hash.replace('#/','');
+        let path = this.props.location.pathname.replace('/','');
         let router = createHashHistory();
         if (path !== arguments[0].key) {
             router.push({
