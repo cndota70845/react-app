@@ -1,39 +1,18 @@
 import React from 'react';
-import './Default.scss';
+import style from './Default.module.scss';
 import { Table, Button, Space } from 'antd';
 
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
+function chooseKey (arr) {
+    let res = Math.min(...arr);
+    if (res > 1) {
+        return 1;
     }
-];
-const data = [];
-for (let i = 0; i < 46; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
-    });
+    else {
+        while (arr.includes(res)) {
+            res++;
+        }
+        return res;
+    }
 }
 
 export default class Default extends React.Component {
@@ -41,19 +20,10 @@ export default class Default extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            selectedRowKeys: [], // Check here to configure the default column
+            selectedRowKeys: [],
             loading: false,
+            data:[]
         };
-    }
-
-    start () {
-        this.setState({ loading: true });
-        setTimeout(() => {
-            this.setState({
-                selectedRowKeys: [],
-                loading: false,
-            });
-        }, 2000);
     }
 
     onSelectChange (selectedRowKeys) {
@@ -61,7 +31,120 @@ export default class Default extends React.Component {
         this.setState({ selectedRowKeys });
     }
 
+    onAdd () {
+        const keyList = this.state.data.map(item => {
+            return parseInt(item.key);
+        });
+        const newKey = chooseKey(keyList);
+        const newData = [].concat(this.state.data,{
+            key: String(newKey),
+            name: 'John Brown',
+            age: 32,
+            address: 'New York No. 1 Lake Park',
+            tags: ['nice', 'developer']
+        }).sort(function(prv, cur){return  prv.key - cur.key});
+        this.setState({ 
+            data: newData
+        });
+    }
+
+    onRemove (type,key) {
+        if (type) {
+            switch (type) {
+                case 'multiple':
+                    this.setState({ 
+                        data:this.state.data.filter(item=>!this.state.selectedRowKeys.includes(item.key)),
+                        selectedRowKeys: [],
+                        loading: false,
+                    });
+                    break;
+                case 'single':
+                    this.setState({ 
+                        data:this.state.data.filter(item=>item.key !== key)
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    componentDidMount () {
+        this.setState({
+            loading: true
+        });
+        this.onInit();
+    }
+
+    async onInit() {
+        const res = await new Promise(function (resolve,reject) {
+            setTimeout(()=>{
+                resolve({
+                    code:1,
+                    data: [
+                            {
+                                key: '1',
+                                name: 'John Brown',
+                                age: 32,
+                                address: 'New York No. 1 Lake Park',
+                                tags: ['nice', 'developer']
+                            },
+                            {
+                                key: '2',
+                                name: 'Jim Green',
+                                age: 42,
+                                address: 'London No. 1 Lake Park',
+                                tags: ['loser']
+                            },
+                            {
+                                key: '3',
+                                name: 'Joe Black',
+                                age: 32,
+                                address: 'Sidney No. 1 Lake Park',
+                                tags: ['cool', 'teacher']
+                            }
+                        ]
+                });
+            },2000)
+        });
+        if (res) {
+            this.setState({
+                data:res.data,
+                loading: false
+            });
+        }
+    }
+
     render () {
+        const columns = [
+            {
+                title: 'Key',
+                dataIndex: 'key',
+            },
+            {
+                title: 'Name',
+                dataIndex: 'name',
+            },
+            {
+                title: 'Age',
+                dataIndex: 'age',
+            },
+            {
+                title: 'Address',
+                dataIndex: 'address',
+            },
+            {
+                title: 'Action',
+                key: 'action',
+                render: (text, record) => (
+                    <Space size="middle">
+                        <Button>Invite {record.name}</Button>
+                        <Button onClick={this.onRemove.bind(this,'single',record.key)}>Delete</Button>
+                    </Space>
+                ),
+            }
+        ];
+        
         const { loading, selectedRowKeys } = this.state;
         const rowSelection = {
             selectedRowKeys,
@@ -70,19 +153,16 @@ export default class Default extends React.Component {
         const hasSelected = selectedRowKeys.length > 0;
         return (
             <div>
-                <div style={{ marginBottom: 16 }}>
-                    <Button type="primary" onClick={this.start.bind(this)} disabled={!hasSelected} loading={loading}>
-                        Reload
-                    </Button>
-                    <span style={{ marginLeft: 8 }}>
-                        {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                    </span>
+                <div className={style.BTN}>
+                    <Button type="primary" className={style.func} onClick={this.onAdd.bind(this)} disabled={loading}>添加一条数据</Button>
+                    <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>批量删除数据</Button>
                 </div>
                 <Table 
                     rowSelection={rowSelection} 
                     columns={columns} 
-                    dataSource={data}
-                    bordered 
+                    dataSource={this.state.data}
+                    bordered
+                    loading={this.state.loading}
                 />
             </div>
         )

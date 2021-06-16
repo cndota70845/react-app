@@ -1,0 +1,11 @@
+.BTN {
+    display: flex;
+    padding:10px 0;
+    justify-content: flex-start;
+    .func {
+        margin-right: 10px;
+    }
+    .func:nth-last-child(1) {
+        margin-right: 0;
+    }
+}
