@@ -28,12 +28,16 @@
       }
     }
     .menu {
-      background-color: #282c34;
+      background-color: #001529;
       padding: 0;
       margin: 0;
-      .flex {
-        justify-content: center;
+      justify-content: space-between;
+      display: flex;
+      .user {
         display: flex;
+        padding: 5px;
+        height: 100%;
+        width: auto;
       }
     }
 }

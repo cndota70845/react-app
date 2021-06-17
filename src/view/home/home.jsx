@@ -2,9 +2,10 @@ import styles from './home.module.scss';
 import menu from '@/assets/menu.json';
 import React from 'react';
 import { createHashHistory } from "history";
-import { Menu } from 'antd';
+import { Menu, Avatar } from 'antd';
 import { HashRouter } from 'react-router-dom';
 import { Route } from 'react-router';
+import userImg from '@/assets/images/DemonSlayer.jpg';
 
 const { SubMenu } = Menu;
 
@@ -42,12 +43,12 @@ export default class Home extends React.Component {
         return (
             <div className={styles.home}>
                 <menu className={styles.menu}>
+                    <div></div>
                     <Menu 
                         onClick={this.handleClick.bind(this)} 
                         selectedKeys={[this.state.current]} 
                         theme={this.state.theme}
                         mode={this.state.mode}
-                        className={styles.flex}
                     >
                         {this.state.menu.map((comment) => (
                             comment.children
@@ -59,6 +60,9 @@ export default class Home extends React.Component {
                             : <Menu.Item key={comment.name}>{comment.content}</Menu.Item>
                         ))} 
                     </Menu>
+                    <div className={styles.user}>
+                        <Avatar src={userImg} />
+                    </div>
                 </menu>
                 <header className={styles.homeHeader}>
                     <HashRouter>

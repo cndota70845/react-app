@@ -1,6 +1,8 @@
 import React from 'react';
 import style from './Default.module.scss';
-import { Table, Button, Space } from 'antd';
+import { Table, Button, Space , Popconfirm } from 'antd';
+import ExportJsonExcel from 'js-export-excel';
+import FormInModal from '@/components/formInModal/formInModal.jsx';
 
 function chooseKey (arr) {
     let res = Math.min(...arr);
@@ -22,13 +24,80 @@ export default class Default extends React.Component {
         this.state = {
             selectedRowKeys: [],
             loading: false,
-            data:[]
+            data:[],
+            isModalVisible: false
         };
+        this.columns = [
+            {
+                title: 'Key',
+                dataIndex: 'key',
+            },
+            {
+                title: '姓名',
+                dataIndex: 'name',
+            },
+            {
+                title: '年龄',
+                dataIndex: 'age',
+            },
+            {
+                title: '地址',
+                dataIndex: 'address',
+            },
+            {
+                title: '操作',
+                key: 'action',
+                render: (text, record) => (
+                    <Space size="middle">
+                        <Button>编辑</Button>
+                        <Popconfirm placement="topLeft" title="是否删除此条信息" onConfirm={this.onRemove.bind(this,'single',record.key)} okText="确认" cancelText="取消">
+                            <Button>Delete</Button>
+                        </Popconfirm>
+                    </Space>
+                ),
+            }
+        ];
+    }
+
+    onModalChange (val) {
+        this.setState({ isModalVisible:val });
     }
 
     onSelectChange (selectedRowKeys) {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
+    }
+
+    downloadExcel () {
+        console.log('导出表格');
+        var option={};
+        if (this.state.data && this.state.data instanceof Array && this.state.data.length > 0) {
+            const data = this.state.data;
+            const columns = this.columns.map(item => {
+                return item.title;
+            });
+            const dataTable = data.map(item => {
+                let obj = {};
+                for (let key in item) {
+                    let key_str = this.columns.filter(item => item.key === key || item.dataIndex === key);
+                    if (key_str.length === 1 && key_str[0].title) {
+                        obj[key_str[0].title] = item[key];
+                    }
+                }
+                return obj;
+            });
+            option.fileName = '测试导出excel';
+            option.datas=[
+                {
+                    sheetData:dataTable,
+                    sheetName:'sheet',
+                    sheetFilter:columns,
+                    sheetHeader:columns,
+                }
+            ];
+            var toExcel = new ExportJsonExcel(option); 
+            toExcel.saveExcel(); 
+        }
     }
 
     onAdd () {
@@ -116,35 +185,6 @@ export default class Default extends React.Component {
     }
 
     render () {
-        const columns = [
-            {
-                title: 'Key',
-                dataIndex: 'key',
-            },
-            {
-                title: 'Name',
-                dataIndex: 'name',
-            },
-            {
-                title: 'Age',
-                dataIndex: 'age',
-            },
-            {
-                title: 'Address',
-                dataIndex: 'address',
-            },
-            {
-                title: 'Action',
-                key: 'action',
-                render: (text, record) => (
-                    <Space size="middle">
-                        <Button>Invite {record.name}</Button>
-                        <Button onClick={this.onRemove.bind(this,'single',record.key)}>Delete</Button>
-                    </Space>
-                ),
-            }
-        ];
-        
         const { loading, selectedRowKeys } = this.state;
         const rowSelection = {
             selectedRowKeys,
@@ -154,16 +194,19 @@ export default class Default extends React.Component {
         return (
             <div>
                 <div className={style.BTN}>
-                    <Button type="primary" className={style.func} onClick={this.onAdd.bind(this)} disabled={loading}>添加一条数据</Button>
-                    <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>批量删除数据</Button>
+                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,true)} disabled={loading}>遮蔽层</Button>
+                    <Button type="primary" className={style.func} onClick={this.onAdd.bind(this)} disabled={loading}>添加</Button>
+                    <Button type="primary" className={style.func} onClick={this.downloadExcel.bind(this)} disabled={loading}>导出</Button>
+                    <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>删除</Button>
                 </div>
                 <Table 
                     rowSelection={rowSelection} 
-                    columns={columns} 
+                    columns={this.columns} 
                     dataSource={this.state.data}
                     bordered
                     loading={this.state.loading}
                 />
+                <FormInModal isModalVisible={this.state.isModalVisible}></FormInModal>
             </div>
         )
     }
