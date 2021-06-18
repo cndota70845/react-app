@@ -1,8 +1,9 @@
 import React from 'react';
 import style from './Default.module.scss';
-import { Table, Button, Space , Popconfirm } from 'antd';
-import ExportJsonExcel from 'js-export-excel';
+import { Table, Button, Space, Popconfirm } from 'antd';
 import FormInModal from '@/components/formInModal/formInModal.jsx';
+import jsExportExcel from '@/utils/downloadExcel/jsExportExcel.js';
+import moment from 'moment';
 
 function chooseKey (arr) {
     let res = Math.min(...arr);
@@ -25,7 +26,8 @@ export default class Default extends React.Component {
             selectedRowKeys: [],
             loading: false,
             data:[],
-            isModalVisible: false
+            isModalVisible: false,
+            editKey:-1
         };
         this.columns = [
             {
@@ -49,8 +51,16 @@ export default class Default extends React.Component {
                 key: 'action',
                 render: (text, record) => (
                     <Space size="middle">
-                        <Button>编辑</Button>
-                        <Popconfirm placement="topLeft" title="是否删除此条信息" onConfirm={this.onRemove.bind(this,'single',record.key)} okText="确认" cancelText="取消">
+                        <Button
+                            onClick={this.onModalChange.bind(this,{modal:1,key:record.key})}
+                        >编辑</Button>
+                        <Popconfirm 
+                            placement="topLeft" 
+                            title="是否删除此条信息" 
+                            onConfirm={this.onRemove.bind(this,'single',record.key)} 
+                            okText="确认" 
+                            cancelText="取消"
+                        >
                             <Button>Delete</Button>
                         </Popconfirm>
                     </Space>
@@ -59,45 +69,17 @@ export default class Default extends React.Component {
         ];
     }
 
-    onModalChange (val) {
-        this.setState({ isModalVisible:val });
+    onModalChange (opt) {
+        const editKey = opt.key?opt.key:-1;
+        this.setState({ 
+            isModalVisible:Boolean(opt.modal),
+            editKey:editKey
+        });
     }
 
     onSelectChange (selectedRowKeys) {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
-    }
-
-    downloadExcel () {
-        console.log('导出表格');
-        var option={};
-        if (this.state.data && this.state.data instanceof Array && this.state.data.length > 0) {
-            const data = this.state.data;
-            const columns = this.columns.map(item => {
-                return item.title;
-            });
-            const dataTable = data.map(item => {
-                let obj = {};
-                for (let key in item) {
-                    let key_str = this.columns.filter(item => item.key === key || item.dataIndex === key);
-                    if (key_str.length === 1 && key_str[0].title) {
-                        obj[key_str[0].title] = item[key];
-                    }
-                }
-                return obj;
-            });
-            option.fileName = '测试导出excel';
-            option.datas=[
-                {
-                    sheetData:dataTable,
-                    sheetName:'sheet',
-                    sheetFilter:columns,
-                    sheetHeader:columns,
-                }
-            ];
-            var toExcel = new ExportJsonExcel(option); 
-            toExcel.saveExcel(); 
-        }
     }
 
     onAdd () {
@@ -117,7 +99,17 @@ export default class Default extends React.Component {
         });
     }
 
+    onDownLoad () {
+        jsExportExcel({
+            data: this.state.data,
+            columns: this.columns,
+            fileName: `测试导出excel${moment().subtract(10, 'days').calendar()}`,
+            columnsWidth: [5,5,5,10]
+        });
+    }
+
     onRemove (type,key) {
+        console.log(key);
         if (type) {
             switch (type) {
                 case 'multiple':
@@ -194,9 +186,9 @@ export default class Default extends React.Component {
         return (
             <div>
                 <div className={style.BTN}>
-                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,true)} disabled={loading}>遮蔽层</Button>
+                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,{modal:1})} disabled={loading}>遮蔽层</Button>
                     <Button type="primary" className={style.func} onClick={this.onAdd.bind(this)} disabled={loading}>添加</Button>
-                    <Button type="primary" className={style.func} onClick={this.downloadExcel.bind(this)} disabled={loading}>导出</Button>
+                    <Button type="primary" className={style.func} onClick={this.onDownLoad.bind(this)} disabled={loading}>导出</Button>
                     <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>删除</Button>
                 </div>
                 <Table 
@@ -206,7 +198,14 @@ export default class Default extends React.Component {
                     bordered
                     loading={this.state.loading}
                 />
-                <FormInModal isModalVisible={this.state.isModalVisible}></FormInModal>
+                {this.state.isModalVisible
+                    ?<FormInModal 
+                        isModalVisible={this.state.isModalVisible} 
+                        close={this.onModalChange.bind(this,{modal:0})}
+                        editKey={this.state.editKey}
+                    ></FormInModal>
+                    :<></>
+                }
             </div>
         )
     }
