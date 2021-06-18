@@ -82,21 +82,37 @@ export default class Default extends React.Component {
         this.setState({ selectedRowKeys });
     }
 
-    onAdd () {
+    onAdd (data) {
         const keyList = this.state.data.map(item => {
             return parseInt(item.key);
         });
         const newKey = chooseKey(keyList);
-        const newData = [].concat(this.state.data,{
-            key: String(newKey),
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer']
-        }).sort(function(prv, cur){return  prv.key - cur.key});
+        const newItem = Object.assign({key: String(newKey)}, data);
+        const newData = [].concat(this.state.data,newItem).sort(function(prv, cur){return  prv.key - cur.key});
         this.setState({ 
-            data: newData
+            data: newData,
+            isModalVisible: false,
+            editKey:-1
         });
+    }
+
+    onEdit (opt) {
+        if (opt.key >= 0) {
+            const newData = this.state.data.map(item => {
+                return item.key === opt.key
+                    ? Object.assign({key: String(opt.key)}, opt.data)
+                    : item;
+            });
+            this.setState({ 
+                data: newData,
+                isModalVisible: false,
+                editKey:-1
+            });
+        }
+        else {
+            this.onAdd(opt.data);
+        }
+        
     }
 
     onDownLoad () {
@@ -186,8 +202,7 @@ export default class Default extends React.Component {
         return (
             <div>
                 <div className={style.BTN}>
-                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,{modal:1})} disabled={loading}>遮蔽层</Button>
-                    <Button type="primary" className={style.func} onClick={this.onAdd.bind(this)} disabled={loading}>添加</Button>
+                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,{modal:1})} disabled={loading}>添加</Button>
                     <Button type="primary" className={style.func} onClick={this.onDownLoad.bind(this)} disabled={loading}>导出</Button>
                     <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>删除</Button>
                 </div>
@@ -203,6 +218,7 @@ export default class Default extends React.Component {
                         isModalVisible={this.state.isModalVisible} 
                         close={this.onModalChange.bind(this,{modal:0})}
                         editKey={this.state.editKey}
+                        submit={this.onEdit.bind(this)}
                     ></FormInModal>
                     :<></>
                 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './formInModal.module.scss';
-import { Modal, Form , Input, InputNumber } from 'antd';
+import { Modal, Form , Input, InputNumber, Button, message } from 'antd';
 
 export default class formInModal extends React.Component {
 
@@ -22,12 +22,21 @@ export default class formInModal extends React.Component {
         console.log('componentDidUpdate',prevProps,prevState);
     }
 
-    handleOk () {
-        console.log('handleOk');
-        this.formRef.validateFields().then(value=>{
-            console.log(value);
-            this.props.close();
-        })
+    async handleOk () {
+        try {
+            const values = await this.formRef.current.validateFields();
+            console.log('Success:', values);
+            message.success('提交校验成功');
+            this.props.submit({
+                key: this.props.editKey,
+                data: values
+            });
+        } 
+        catch (errorInfo) {
+            console.log('Failed:', errorInfo);
+            message.warn('提交校验失败')
+        }
+            
     }
 
     handleCancel () {
@@ -125,26 +134,39 @@ export default class formInModal extends React.Component {
         ];
         return (
             <>
-                <Modal title={this.props.editKey < 0?`新增`:`编辑`} visible={this.props.isModalVisible} onOk={this.handleOk.bind(this)} onCancel={this.handleCancel.bind(this)}>
-                    <div>
-                        <Form
-                            {...layout}
-                            className={styles.Form}
-                            onFinish={this.onFinish}
-                            onFinishFailed={this.onFinishFailed}
-                            ref={this.formRef}
-                            initialValues={this.state}
-                        >
-                            {formSource.map((item,idx) => (
-                                <Form.Item
-                                    {...item.formItem}
-                                    key={idx}
-                                >
-                                    {item.component}
-                                </Form.Item>
-                            ))}
-                        </Form>
-                    </div>
+                <Modal 
+                    title={this.props.editKey < 0?`新增`:`编辑`} 
+                    visible={this.props.isModalVisible} 
+                    closable={false}
+                    footer={[
+                        <Button 
+                            key="back" 
+                            onClick={this.handleCancel.bind(this)}
+                        >取消</Button>,
+                        <Button 
+                            key="submit" 
+                            type="primary" 
+                            onClick={this.handleOk.bind(this)}
+                        >提交</Button>
+                    ]}
+                >
+                    <Form
+                        {...layout}
+                        className={styles.Form}
+                        onFinish={this.onFinish}
+                        onFinishFailed={this.onFinishFailed}
+                        ref={this.formRef}
+                        initialValues={this.state}
+                    >
+                        {formSource.map((item,idx) => (
+                            <Form.Item
+                                {...item.formItem}
+                                key={idx}
+                            >
+                                {item.component}
+                            </Form.Item>
+                        ))}
+                    </Form>
                 </Modal>
             </>
         )
