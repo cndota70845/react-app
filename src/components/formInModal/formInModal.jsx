@@ -2,6 +2,17 @@ import React from 'react';
 import styles from './formInModal.module.scss';
 import { Modal, Form , Input, InputNumber, Button, message } from 'antd';
 
+function mesh(target,rource) {
+    const keyList = Object.keys(rource);
+    let response = {};
+    for (let key in target) {
+        if (keyList.includes(key)) {
+            response[key] = rource[key];
+        }
+    }
+    return response;
+}
+
 export default class formInModal extends React.Component {
 
     constructor (props) {
@@ -16,6 +27,16 @@ export default class formInModal extends React.Component {
 
     componentDidMount () {
         console.log('componentDidMount');
+        this.init();
+    }
+
+    init () {
+        if (this.props.defaultData instanceof Array && this.props.defaultData.length === 1) {
+            const obj = mesh(this.state,this.props.defaultData[0]);
+            console.log(obj);
+            this.setState({...obj});
+            this.formRef.current.setFieldsValue({...obj});
+        }
     }
 
     componentDidUpdate (prevProps,prevState) {

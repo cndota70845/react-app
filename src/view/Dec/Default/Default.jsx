@@ -199,26 +199,55 @@ export default class Default extends React.Component {
             onChange: this.onSelectChange.bind(this)
         };
         const hasSelected = selectedRowKeys.length > 0;
+        const table = {
+            rowSelection: rowSelection,
+            columns: this.columns,
+            dataSource: this.state.data,
+            bordered: true,
+            loading: this.state.loading
+        }
+        const form = {
+            isModalVisible: this.state.isModalVisible,
+            close: this.onModalChange.bind(this,{modal:0}),
+            editKey: this.state.editKey,
+            submit: this.onEdit.bind(this),
+            defaultData: this.state.editKey >=0
+                ? this.state.data.filter(item => item.key === this.state.editKey)
+                : []
+        }
+        const button = {
+            add: {
+                type: 'primary',
+                className: style.func,
+                onClick: this.onModalChange.bind(this,{modal:1}),
+                disabled: loading
+            },
+            export: {
+                type: 'primary',
+                className: style.func,
+                onClick: this.onDownLoad.bind(this),
+                disabled: loading
+            },
+            remove: {
+                type: 'danger',
+                className: style.func, 
+                disabled: !hasSelected || loading,
+                onClick: this.onRemove.bind(this,'multiple')
+            }
+        }
         return (
             <div>
                 <div className={style.BTN}>
-                    <Button type="primary" className={style.func} onClick={this.onModalChange.bind(this,{modal:1})} disabled={loading}>添加</Button>
-                    <Button type="primary" className={style.func} onClick={this.onDownLoad.bind(this)} disabled={loading}>导出</Button>
-                    <Button type="danger" className={style.func} disabled={!hasSelected || loading} onClick={this.onRemove.bind(this,'multiple')}>删除</Button>
+                    <Button {...button.add}>添加</Button>
+                    <Button {...button.export}>导出</Button>
+                    <Button {...button.remove}>删除</Button>
                 </div>
                 <Table 
-                    rowSelection={rowSelection} 
-                    columns={this.columns} 
-                    dataSource={this.state.data}
-                    bordered
-                    loading={this.state.loading}
+                    {...table}
                 />
                 {this.state.isModalVisible
                     ?<FormInModal 
-                        isModalVisible={this.state.isModalVisible} 
-                        close={this.onModalChange.bind(this,{modal:0})}
-                        editKey={this.state.editKey}
-                        submit={this.onEdit.bind(this)}
+                        {...form}
                     ></FormInModal>
                     :<></>
                 }
